@@ -1,5 +1,24 @@
-body{
-	margin:0;
-	border:0;
+.header__title{
+	margin-top:5vh;
 }
 
+
+
+
+body{
+	background-image:url("../image/bg.jpg");
+	background-size:cover;
+	background-repeat:no-repeat;
+	width:100vw;
+	height: 100vh;
+
+}
+
+h1{
+   background-image: linear-gradient(to right bottom, white,gray);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size:5rem;
+  margin-bottom: 5vh;
+	
+}
