@@ -26,6 +26,8 @@ In order to get your hands dirty, you should go through the basic trial of both 
     - After knowing what Heroku is, you should try [this little tutorial](https://devcenter.heroku.com/articles/getting-started-with-php)
     to deploy a really simple php project on your free account. Trust me it's not hard and it will be interesting.
 
+    <!-- -[](https://medium.com/@luis.barros.nobrega/symfony-4-deploying-a-new-application-in-heroku-ada66f0592d1) -->
+
 Have fun with the framework and the tool!
 
 ### Next step:
