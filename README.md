@@ -1,6 +1,8 @@
 # NYU CSSA Referral System
 
-## To developers:
+## To our little developers:
+
+### What you should do now:
 Don't be afraid of the complicated directory structures, 
 I just learned and applied a PHP framework called [`Symfony`](https://symfony.com) to it.
 Also I want to deploy this web app on [`Heroku`](https://heroku.com)
@@ -23,8 +25,23 @@ In order to get your hands dirty, you should go through the basic trial of both 
     
     - After knowing what Heroku is, you should try [this little tutorial](https://devcenter.heroku.com/articles/getting-started-with-php)
     to deploy a really simple php project on your free account. Trust me it's not hard and it will be interesting.
-    
+
 Have fun with the framework and the tool!
+
+### Next step:
+
+I have created a google cloud SQL project and we can learn how to operate it using PHP API so that
+we can hook the app with the cloud database. I will check the resources below to find out how to connect
+and how to "SQL" the Google Cloud!
+
+- [How to connect to Google Cloud](https://cloud.google.com/sql/docs/mysql/connect-external-app)
+
+- [Doctrine: a PHP tool to operate on databases](https://symfony.com/doc/current/doctrine.html)
+
+- [Generate PHP Entities from existing database](https://symfony.com/doc/current/doctrine/reverse_engineering.html)
+
+Also I will find out how do automatically deploy this app after each push to github. 
+For now we can use our own accounts to deploy it.
 
 ## To others:
 
