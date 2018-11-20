@@ -26,36 +26,36 @@
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list"> 
 
-             <form>
+             <form method = 'post' action = '../src/Controller/LoginPageController.php'>
               <div class="form-group">
               
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                <input name = 'email' type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
                 
               </div>
               <div class="form-group">
                
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <input name = 'password' type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
               </div>
               
-              <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
+              <button name = 'studentSubmit' type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
             </form>
 
           </div>
           <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
             
 
-            <form>
+            <form method = 'post'>
               <div class="form-group">
               
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Company Name">
+                <input name = 'email' type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Company Name">
                 
               </div>
               <div class="form-group">
                
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <input name = 'password' type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
               </div>
               
-              <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
+              <button name = 'enterpriseLogin' type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
             </form>
 
 
