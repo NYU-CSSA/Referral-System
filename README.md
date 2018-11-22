@@ -1,8 +1,28 @@
 # NYU CSSA Referral System
 
-## To our little developers:
+## HOW TO
 
-### What you should do now:
+### Download
+
+```shell
+git clone git@github.com:NYU-CSSA/Referral-System.git
+```
+
+### Run it locally
+
+```shell
+php bin/console server:run
+```
+
+### deploy it to Heroku
+
+```shell
+# I forgot it. Refer to heroku tutorial.
+```
+
+## To our developers:
+
+### What you should have already learned:
 Don't be afraid of the complicated directory structures, 
 I just learned and applied a PHP framework called [`Symfony`](https://symfony.com) to it.
 Also I want to deploy this web app on [`Heroku`](https://heroku.com)
@@ -45,10 +65,8 @@ and how to "SQL" the Google Cloud!
 Also I will find out how do automatically deploy this app after each push to github. 
 For now we can use our own accounts to deploy it.
 
-## To others:
+## To users:
 
 The NYU CSSA Referral System aims at:
 > 建立一个nyu学生的简历信息数据库，在可以更好的收集了解nyu同学求职信息的同时，把这个简历库的使用权交给来招聘的企业。
 > 同学可以填写信息和求职意向，企业可以登录简历库查找筛选同学的信息，建立学生和企业之间信息高效互通的渠道。
-
-TODO: 这段吹逼的话应该由比我更会吹逼的人写。
