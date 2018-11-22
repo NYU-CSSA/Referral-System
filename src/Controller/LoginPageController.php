@@ -21,52 +21,51 @@ class LoginPageController extends AbstractController
     }
 
     /**
-     * @Route('/referal-system/public/Login')
+     * @Route("/referal-system/forms/login")
      */
-    public function login(Request $request){
+    public function login(Request $request) {
+        $formName = $request -> request -> get('formName');
 
-        if($request -> request -> has("submitEnterprise")){
-            echo("TURE");
-            $this->studentLogin($request);
+        if ($formName == "studentLogin") {
+            return $this->studentLogin($request);
         }
-        else{
-            $this->enterpriseLogin($request);
-        }
-        return $this-> render('index.html.twig');
-
-
-    }
-
-    //need to look up in the student table
-    public function studentLogin(Request $request){
-        $password = $request -> request ->get('password');
-        $email = $request -> request ->get('email');
-
-        $correctpw = "adsdaasd";
-        $correct = FALSE;
-        $error = "Unsuccessful login.";
-        if(!$correct){
-            return new Response('<html><body>hello world</body></html>')   ;
-        }
-        else {
-            return $this->render("placeholder");
+        else if ($formName == "enterpriseLogin") {
+            return $this->enterpriseLogin($request);
+        } else {
+            return new Response("Undefined form type: $formName");
         }
     }
 
-    //need to look up in the enterprise table
-    public function enterpriseLogin(Request $request){
+    private function studentLogin(Request $request){
         $password = $request -> request ->get('password');
         $email = $request -> request ->get('email');
 
-        $correct = FALSE;
-        $correctpw = "adsdaasd";
-        $error = "Unsuccessful login.";
+        $correctpw = "passwd"; // TODO: fetch data from database
+        $correct = $password == $correctpw;
 
-        if(!$correct){
-            return $this -> render("helloworld");
+        $error = "Unsuccessful login.";
+        if($correct){
+            return new Response("<html><body>Success! Welcome, $email</body></html>")   ;
         }
         else {
-            return $this->render("placeholder");
+            return new Response($error);
+        }
+    }
+
+    private function enterpriseLogin(Request $request){
+        $password = $request -> request ->get('password');
+        $email = $request -> request ->get('email');
+
+        $correctpw = "passwd"; // TODO: fetch data from database
+        $correct = $password == $correctpw;
+
+        $error = "Unsuccessful login.";
+
+        if($correct){
+            return new Response("Success! Welcome, $email");
+        }
+        else {
+            return new Response($error);
         }
     }
 
