@@ -52,15 +52,15 @@ Have fun with the framework and the tool!
 
 ### Next step:
 
-I have created a google cloud SQL project and we can learn how to operate it using PHP API so that
-we can hook the app with the cloud database. I will check the resources below to find out how to connect
-and how to "SQL" the Google Cloud!
+- [ ] Registration [How to Implement a Simple Registration Form](https://symfony.com/doc/current/doctrine/registration_form.html)
 
-- [How to connect to Google Cloud](https://cloud.google.com/sql/docs/mysql/connect-external-app)
+- [ ] Login [How to Build a Login Form](https://symfony.com/doc/current/security/form_login_setup.html)
 
-- [Doctrine: a PHP tool to operate on databases](https://symfony.com/doc/current/doctrine.html)
+- [x] [How to connect to Google Cloud](https://cloud.google.com/sql/docs/mysql/connect-external-app)
 
-- [Generate PHP Entities from existing database](https://symfony.com/doc/current/doctrine/reverse_engineering.html)
+- [x] [Doctrine: a PHP tool to operate on databases](https://symfony.com/doc/current/doctrine.html)
+
+<!-- - [Generate PHP Entities from existing database](https://symfony.com/doc/current/doctrine/reverse_engineering.html) -->
 
 Also I will find out how do automatically deploy this app after each push to github. 
 For now we can use our own accounts to deploy it.
