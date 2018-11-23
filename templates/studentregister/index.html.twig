@@ -9,74 +9,59 @@
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
 
-                            <form>
+                            <form method="POST" action="{{ path('sturegform') }}">
+                                <div class="form-group">
+                                    <label for="exampleFormControlFile1">Name</label>
+                                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlFile1">Password</label>
+                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlFile1">Confirm Password</label>
+                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Email address</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                                    <input type="email" name="email" class="form-control" aria-describedby="emailHelp" placeholder="Email">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Wechat</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                                    <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Wechat">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Phone Number</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                                    <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Phone Number">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Year</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                                    <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Year">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Majar/Concentration</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                                    <label for="exampleInputEmail1">Major/Concentration</label>
+                                    <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Major">
                                 </div>
-
-
-
-
 
                                 <div class="form-group">
                                     <label for="exampleFormControlFile1">Resume</label>
-                                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                                    <input type="file" class="form-control-file">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleFormControlFile1">Profolio</label>
-                                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
-                                </div>
+                                    <input type="file" class="form-control-file">
+                                </div>                            
 
                                 <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
                             </form>
-
-                        </div>
-                        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-
-
-                            <form>
-                                <div class="form-group">
-
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Company Name">
-
-                                </div>
-                                <div class="form-group">
-
-                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                                </div>
-
-                                <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
-                            </form>
-
-
-
-
-
-
-
                         </div>
                         <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">234</div>
 

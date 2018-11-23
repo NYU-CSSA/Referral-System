@@ -21,7 +21,7 @@ class LoginPageController extends AbstractController
     }
 
     /**
-     * @Route("/referal-system/forms/login")
+     * @Route("/referal-system/forms/login", name="login_form")
      */
     public function login(Request $request) {
         $formName = $request -> request -> get('formName');
