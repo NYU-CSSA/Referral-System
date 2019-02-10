@@ -15,14 +15,15 @@ class StudentregisterController extends AbstractController
     /**
      * @Route("/register/student", name="register_stu")
      */
-    public function registerStu(Request $request): Response {
-        if(!$request->isMethod("POST")){
-            return new Response(json_encode(["success"=>false, "errMsg"=>"not a Post request"]));
+    public function registerStu(Request $request): Response
+    {
+        if (!$request->isMethod("POST")) {
+            return new Response(json_encode(["success" => false, "errMsg" => "not a Post request"]));
         }
 
         // validation
-        if(!Utils::fieldsExist($request, ['name', 'email','gender','photo','password'])){
-            return new Response(json_encode(["success"=>false, "errMsg"=>"field doesn't exist", "received"=>$request]));
+        if (!Utils::fieldsExist($request, ['name', 'email', 'gender', 'photo', 'password'])) {
+            return new Response(json_encode(["success" => false, "errMsg" => "field doesn't exist", "received" => $request]));
         }
 
         // create entity
@@ -39,9 +40,9 @@ class StudentregisterController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($student);
             $entityManager->flush();
-        } catch (UniqueConstraintViolationException $e){
+        } catch (UniqueConstraintViolationException $e) {
             return Utils::makeErrMsgResponse("The email has already been registered");
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
             return Utils::makeErrMsgResponse($message);
         }
@@ -49,19 +50,20 @@ class StudentregisterController extends AbstractController
         // we can get the auto-generated ID of this entity
         // $id = $student->getId();
 
-        return new Response(json_encode(["success"=>true]));
+        return new Response(json_encode(["success" => true]));
     }
 
     /**
-    * @Route("/studentregister/list")
-    */
-    public function listStudents(): Response {
+     * @Route("/studentregister/list")
+     */
+    public function listStudents(): Response
+    {
         $students = $this->getDoctrine()->getRepository(Student::class)
             ->findAll();
         $list = "";
-        foreach($students as $s){
-            $list = $list."</br> ".$s->getEmail();
+        foreach ($students as $s) {
+            $list = $list . "</br> " . $s->getEmail();
         }
-        return new Response('Check out these emails: '.$list);
+        return new Response('Check out these emails: ' . $list);
     }
 }

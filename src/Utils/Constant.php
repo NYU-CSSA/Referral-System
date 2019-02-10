@@ -3,7 +3,8 @@
 
 namespace App\Utils;
 
-class Constant{
+class Constant
+{
     /** ------ Keys for session ------ */
     /** @var string */
     public static $SES_KEY_STU_ID = "student_id";

@@ -28,87 +28,86 @@ class LoginPageController extends AbstractController
     /**
      * @Route("/login/student", name="login_student")
      */
-    public function login(Request $request, SessionInterface $session) {
-        if($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)){
+    public function login(Request $request, SessionInterface $session)
+    {
+        if ($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)) {
             return Utils::makeErrMsgResponse("You have already logged in");
         }
         $session->clear();
 
-        $email = $request -> request ->get('email');
-        $password = $request -> request ->get('password');
+        $email = $request->request->get('email');
+        $password = $request->request->get('password');
 
         $student = $this->getDoctrine()
             ->getRepository(Student::class)
-            ->findOneBy(['email'=>$email]);
+            ->findOneBy(['email' => $email]);
 
-        if($student == null) {
+        if ($student == null) {
             return Utils::makeErrMsgResponse("Wrong email");
-        }
-        else if($password != $student->getPassword()) {
+        } else if ($password != $student->getPassword()) {
             return Utils::makeErrMsgResponse("Wrong password");
         }
         $session->set(Constant::$SES_KEY_STU_ID, $student->getId());
         $session->set(Constant::$SES_KEY_STU_NAME, $student->getName());
         $session->set(Constant::$SES_KEY_COMP_EMAIL, $student->getEmail());
 
-        return new Response(json_encode(['success'=>true, 'name'=>$student->getName()]));
+        return new Response(json_encode(['success' => true, 'name' => $student->getName()]));
     }
 
     /**
      * @Route("/student/logout", name="student_logout")
      */
-    public function studentLogOut(Request $request, SessionInterface $session) {
-        if(!$session->has(Constant::$SES_KEY_STU_ID)){
+    public function studentLogOut(Request $request, SessionInterface $session)
+    {
+        if (!$session->has(Constant::$SES_KEY_STU_ID)) {
             $session->clear();
             return Utils::makeErrMsgResponse("You have not logged in");
         }
         $session->clear();
-        return new Response(json_encode(['success'=>true]));
+        return new Response(json_encode(['success' => true]));
     }
 
     /**
      * @Route("/login/company", name="login_company")
      */
-    public function companyLogin(Request $request, SessionInterface $session){
-        if($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)){
+    public function companyLogin(Request $request, SessionInterface $session)
+    {
+        if ($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)) {
             return Utils::makeErrMsgResponse("You have already logged in");
         }
         $session->clear();
 
-        $email = $request -> request ->get('email');
-        $password = $request -> request ->get('password');
+        $email = $request->request->get('email');
+        $password = $request->request->get('password');
 
         $company = $this->getDoctrine()
             ->getRepository(Company::class)
-            ->findOneBy(['email'=>$email]);
+            ->findOneBy(['email' => $email]);
 
-        if($company == null) {
+        if ($company == null) {
             return Utils::makeErrMsgResponse("Wrong email");
-        }
-        else if($password != $company->getPassword()) {
+        } else if ($password != $company->getPassword()) {
             return Utils::makeErrMsgResponse("Wrong password");
         }
 
         $session->set(Constant::$SES_KEY_COMP_ID, $company->getId());
         $session->set(Constant::$SES_KEY_COMP_EMAIL, $company->getEmail());
 
-        return new Response(json_encode(['success'=>true, 'name'=>$company->getName()]));
+        return new Response(json_encode(['success' => true, 'name' => $company->getName()]));
     }
 
     /**
      * @Route("/company/logout", name="company_logout")
      */
-    public function companyLogOut(Request $request, SessionInterface $session) {
-        if(!$session->has(Constant::$SES_KEY_COMP_ID)){
+    public function companyLogOut(Request $request, SessionInterface $session)
+    {
+        if (!$session->has(Constant::$SES_KEY_COMP_ID)) {
             $session->clear();
             return Utils::makeErrMsgResponse("You have not logged in");
         }
         $session->clear();
-        return new Response(json_encode(['success'=>true]));
+        return new Response(json_encode(['success' => true]));
     }
-
-
-
 
 
 }

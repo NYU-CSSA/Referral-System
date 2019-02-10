@@ -16,12 +16,13 @@ class StudentController extends AbstractController
     /**
      * @Route("/student/getcompany", name="get_company")
      */
-    public function getCompany(Request $request, SessionInterface $session) {
-        if(!$request->isMethod("GET")){
+    public function getCompany(Request $request, SessionInterface $session)
+    {
+        if (!$request->isMethod("GET")) {
             return Utils::makeErrMsgResponse("not a GET request");
         }
 
-        if(!$session->has(Constant::$SES_KEY_STU_ID)){
+        if (!$session->has(Constant::$SES_KEY_STU_ID)) {
             return Utils::makeErrMsgResponse("You have not logged in");
         }
 
@@ -31,15 +32,24 @@ class StudentController extends AbstractController
             ->findAll();
 
         $return_data = array();
-        foreach ($companies as $company){
+        foreach ($companies as $company) {
             $return_data[] = [
-                'name'=>$company->getName(),
-                'description'=>$company->getDescription(),
-                ];
+                'name' => $company->getName(),
+                'description' => $company->getDescription(),
+            ];
         }
+
         return new Response(json_encode([
-            "success"=>true,
-            "company"=>$return_data,
+            "success" => true,
+            "company" => $return_data,
         ]));
+    }
+
+    /**
+     * @Route("/student/getprofile", name="student_get_profile")
+     */
+    public function getProfile(Request $request, SessionInterface $session)
+    {
+
     }
 }
