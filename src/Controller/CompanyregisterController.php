@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Utils\ErrorResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +19,13 @@ class CompanyregisterController extends AbstractController
     public function registerComp(Request $request): Response
     {
         if (!$request->isMethod("POST")) {
-            return new Response(json_encode(["success" => false, "errMsg" => "not a Post request"]));
+            return ErrorResponse::RequestTypeErrorResponse();
         }
 
         // validation
-        if (!Utils::fieldsExist($request, ['name', 'email', 'password'])) {
-            return new Response(json_encode(["success" => false, "errMsg" => "field doesn't exist", "received" => $request]));
+        $missedFields = Utils::getMissingFields($request, ['name', 'email', 'password']);
+        if (sizeof($missedFields) != 0) {
+            return ErrorResponse::FieldMissingErrorResponse($missedFields);
         }
 
         // create entity
@@ -40,10 +42,10 @@ class CompanyregisterController extends AbstractController
             $entityManager->persist($company);
             $entityManager->flush();
         } catch (UniqueConstraintViolationException $e) {
-            return new Response(json_encode(["success" => false, "errMsg" => "The email has already been registered"]));
+            return ErrorResponse::DuplicatedRegistrationResponse();
         } catch (\Exception $e) {
             $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
-            return new Response(json_encode(["success" => false, "errMsg" => $message]));
+            return ErrorResponse::InternalErrorResponse($message);
         }
 
         return new Response(json_encode(["success" => true]));

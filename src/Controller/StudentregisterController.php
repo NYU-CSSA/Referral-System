@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Utils\ErrorResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +19,13 @@ class StudentregisterController extends AbstractController
     public function registerStu(Request $request): Response
     {
         if (!$request->isMethod("POST")) {
-            return new Response(json_encode(["success" => false, "errMsg" => "not a Post request"]));
+            return ErrorResponse::RequestTypeErrorResponse();
         }
 
         // validation
-        if (!Utils::fieldsExist($request, ['name', 'email', 'gender', 'photo', 'password'])) {
-            return new Response(json_encode(["success" => false, "errMsg" => "field doesn't exist", "received" => $request]));
+        $missedFileds = Utils::getMissingFields($request, ['name', 'email', 'gender', 'photo', 'password']);
+        if (sizeof($missedFileds) != 0) {
+            return ErrorResponse::FieldMissingErrorResponse($missedFileds);
         }
 
         // create entity
@@ -41,29 +43,15 @@ class StudentregisterController extends AbstractController
             $entityManager->persist($student);
             $entityManager->flush();
         } catch (UniqueConstraintViolationException $e) {
-            return Utils::makeErrMsgResponse("The email has already been registered");
+            return ErrorResponse::DuplicatedRegistrationResponse();
         } catch (\Exception $e) {
             $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
-            return Utils::makeErrMsgResponse($message);
+            return ErrorResponse::InternalErrorResponse($message);
         }
 
         // we can get the auto-generated ID of this entity
         // $id = $student->getId();
 
         return new Response(json_encode(["success" => true]));
-    }
-
-    /**
-     * @Route("/studentregister/list")
-     */
-    public function listStudents(): Response
-    {
-        $students = $this->getDoctrine()->getRepository(Student::class)
-            ->findAll();
-        $list = "";
-        foreach ($students as $s) {
-            $list = $list . "</br> " . $s->getEmail();
-        }
-        return new Response('Check out these emails: ' . $list);
     }
 }

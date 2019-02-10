@@ -8,18 +8,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Utils
 {
-    public static function fieldsExist(Request $req, array $fields): bool
+    public static function getMissingFields(Request $req, array $fields): array
     {
+        $res = [];
         foreach ($fields as $field) {
             if (!$req->request->has($field)) {
-                return false;
+                $res[] = $field;
             }
         }
-        return true;
+        return $res;
     }
-
-    public static function makeErrMsgResponse(string $errMsg): Response
-    {
-        return new Response(json_encode(['success' => false, 'errMsg' => $errMsg]));
-    }
+    
 }

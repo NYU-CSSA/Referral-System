@@ -58,6 +58,11 @@ class Student
      */
     private $likes;
 
+    /**
+     * @ORM\Column(type="string", length=1023, nullable=true)
+     */
+    private $intro;
+
     public function __construct()
     {
         $this->resumes = new ArrayCollection();
@@ -197,6 +202,18 @@ class Student
             $this->likes->removeElement($like);
             $like->removeLikedBy($this);
         }
+
+        return $this;
+    }
+
+    public function getIntro(): ?string
+    {
+        return $this->intro;
+    }
+
+    public function setIntro(?string $intro): self
+    {
+        $this->intro = $intro;
 
         return $this;
     }

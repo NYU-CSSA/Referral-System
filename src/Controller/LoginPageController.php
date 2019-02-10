@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Company;
+use App\Utils\ErrorResponse;
 use App\Utils\Utils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,22 +17,15 @@ use App\Utils\Constant;
 class LoginPageController extends AbstractController
 {
     /**
-     * @Route("/", name="login_page")
-     */
-    public function index()
-    {
-        return $this->render('login_page/index.html.twig', [
-            'controller_name' => 'LoginPageController',
-        ]);
-    }
-
-    /**
      * @Route("/login/student", name="login_student")
      */
     public function login(Request $request, SessionInterface $session)
     {
+        if (!$request->isMethod("POST")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
         if ($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)) {
-            return Utils::makeErrMsgResponse("You have already logged in");
+            return ErrorResponse::DuplicateLoginErrorResponse();
         }
         $session->clear();
 
@@ -43,9 +37,9 @@ class LoginPageController extends AbstractController
             ->findOneBy(['email' => $email]);
 
         if ($student == null) {
-            return Utils::makeErrMsgResponse("Wrong email");
+            return ErrorResponse::LoginErrorResponse();
         } else if ($password != $student->getPassword()) {
-            return Utils::makeErrMsgResponse("Wrong password");
+            return ErrorResponse::LoginErrorResponse();
         }
         $session->set(Constant::$SES_KEY_STU_ID, $student->getId());
         $session->set(Constant::$SES_KEY_STU_NAME, $student->getName());
@@ -59,9 +53,12 @@ class LoginPageController extends AbstractController
      */
     public function studentLogOut(Request $request, SessionInterface $session)
     {
+        if (!$request->isMethod("GET")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
         if (!$session->has(Constant::$SES_KEY_STU_ID)) {
             $session->clear();
-            return Utils::makeErrMsgResponse("You have not logged in");
+            return ErrorResponse::UnLoggedErrorResponse();
         }
         $session->clear();
         return new Response(json_encode(['success' => true]));
@@ -72,8 +69,11 @@ class LoginPageController extends AbstractController
      */
     public function companyLogin(Request $request, SessionInterface $session)
     {
+        if (!$request->isMethod("POST")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
         if ($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)) {
-            return Utils::makeErrMsgResponse("You have already logged in");
+            return ErrorResponse::DuplicateLoginErrorResponse();
         }
         $session->clear();
 
@@ -85,9 +85,9 @@ class LoginPageController extends AbstractController
             ->findOneBy(['email' => $email]);
 
         if ($company == null) {
-            return Utils::makeErrMsgResponse("Wrong email");
+            return ErrorResponse::LoginErrorResponse();
         } else if ($password != $company->getPassword()) {
-            return Utils::makeErrMsgResponse("Wrong password");
+            return ErrorResponse::LoginErrorResponse();
         }
 
         $session->set(Constant::$SES_KEY_COMP_ID, $company->getId());
@@ -101,9 +101,12 @@ class LoginPageController extends AbstractController
      */
     public function companyLogOut(Request $request, SessionInterface $session)
     {
+        if (!$request->isMethod("GET")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
         if (!$session->has(Constant::$SES_KEY_COMP_ID)) {
             $session->clear();
-            return Utils::makeErrMsgResponse("You have not logged in");
+            return ErrorResponse::DuplicateLoginErrorResponse();
         }
         $session->clear();
         return new Response(json_encode(['success' => true]));
