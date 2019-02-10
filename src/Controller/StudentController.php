@@ -65,14 +65,14 @@ class StudentController extends AbstractController
             ->getRepository(Student::class)
             ->findOneBy(['id' => $session->get(Constant::$SES_KEY_STU_ID)]);
 
-        if($me == null) {
+        if ($me == null) {
             $session->clear();
             return ErrorResponse::InternalErrorResponse("IMPOSSIBLE: userID in session does not exist!");
         }
 
         return new Response(json_encode([
             'success' => true,
-            'profile'=>[
+            'profile' => [
                 'name' => $me->getName(),
                 'email' => $me->getEmail(),
                 'photo' => $me->getPhoto(),
@@ -80,5 +80,48 @@ class StudentController extends AbstractController
                 'gender' => $me->getGender(),
             ],
         ]));
+    }
+
+    /**
+     * @Route("/student/editprofile", name="student_edit_profile")
+     */
+    public function editProfile(Request $request, SessionInterface $session)
+    {
+        if (!$request->isMethod("POST")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
+        if (!$session->has(Constant::$SES_KEY_STU_ID)) {
+            return ErrorResponse::UnLoggedErrorResponse();
+        }
+
+        /** @var Student $me */
+        $me = $this->getDoctrine()
+            ->getRepository(Student::class)
+            ->findOneBy(['id' => $session->get(Constant::$SES_KEY_STU_ID)]);
+        if ($me == null) {
+            $session->clear();
+            return ErrorResponse::InternalErrorResponse("IMPOSSIBLE: userID in session does not exist!");
+        }
+
+        $missedFields = Utils::getMissingFields($request, ['name', 'gender', 'intro']);
+        if (sizeof($missedFields) != 0) {
+            return ErrorResponse::FieldMissingErrorResponse($missedFields);
+        }
+
+        $me->setName($request->request->get("name"));
+        $me->setGender($request->request->get("gender"));
+        $me->setIntro($request->request->get("intro"));
+
+        try {
+            $dm = $this->getDoctrine()->getManager();
+            $dm->persist($me);
+            $dm->flush();
+        } catch (\Exception $e) {
+            $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
+            return ErrorResponse::InternalErrorResponse($message);
+        }
+
+        return new Response(json_encode(['success' => true]));
+
     }
 }

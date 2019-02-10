@@ -106,7 +106,7 @@ class LoginPageController extends AbstractController
         }
         if (!$session->has(Constant::$SES_KEY_COMP_ID)) {
             $session->clear();
-            return ErrorResponse::DuplicateLoginErrorResponse();
+            return ErrorResponse::UnLoggedErrorResponse();
         }
         $session->clear();
         return new Response(json_encode(['success' => true]));
