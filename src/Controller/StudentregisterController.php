@@ -4,47 +4,59 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use App\Entity\Student;
+use App\Utils\Utils;
 
 class StudentregisterController extends AbstractController
 {
     /**
-     * @Route("/studentregister", name="studentregister")
+     * @Route("/register/student", name="register_stu")
      */
-    public function index()
-    {
-        return $this->render('studentregister/index.html.twig', [
-            'controller_name' => 'StudentregisterController',
-        ]);
-    }
+    public function registerStu(Request $request): Response {
+        if(!$request->isMethod("POST")){
+            return new Response(json_encode(["success"=>false, "errMsg"=>"not a Post request"]));
+        }
 
-    /**
-     * @Route("/studentregister/submitform", name="sturegform")
-     */
-    public function rigister(Request $request) {
-    	$entityManager = $this->getDoctrine()->getManager();
+        // validation
+        if(!Utils::fieldsExist($request, ['name', 'email','gender','photo','password'])){
+            return new Response(json_encode(["success"=>false, "errMsg"=>"field doesn't exist", "received"=>$request]));
+        }
 
-    	$student = new Student();
-    	$student->setName("aaa");
-    	$student->setEmail($request->request->get("email"));
-    	$student->setPassword("ccc");
-    	$student->setCreatetime(new \Datetime());
+        // create entity
+        $student = new Student();
+        $student->setName($request->request->get("name"));
+        $student->setEmail($request->request->get("email"));
+        $student->setGender($request->request->get("gender"));
+        $student->setPhoto($request->request->get("photo"));
+        $student->setPassword($request->request->get("password"));
+        $student->setCreatetime(new \Datetime());
 
-    	$entityManager->persist($student);
-    	$entityManager->flush();
+        // store this entity to db
+        try {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($student);
+            $entityManager->flush();
+        } catch (UniqueConstraintViolationException $e){
+            $message = sprintf('PDOException [%i]: %s', $e->getCode(), $e->getMessage());
+            return new Response(json_encode(["success"=>false, "errMsg"=>"The email has already been registered"]));
+        } catch (\Exception $e){
+            $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
+            return new Response(json_encode(["success"=>false, "errMsg"=>$message]));
+        }
 
-    	$id = $student->getId();
+        // we can get the auto-generated ID of this entity
+        // $id = $student->getId();
 
-    	return new Response("Successfully inserted!, id=$id");
+        return new Response(json_encode(["success"=>true]));
     }
 
     /**
     * @Route("/studentregister/list")
     */
-    public function listStudents() {
+    public function listStudents(): Response {
         $students = $this->getDoctrine()->getRepository(Student::class)
             ->findAll();
         $list = "";
