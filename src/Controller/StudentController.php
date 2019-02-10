@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Company;
 use App\Utils\Constant;
 use App\Utils\Utils;
-use http\Env\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class StudentController extends AbstractController
@@ -24,13 +25,21 @@ class StudentController extends AbstractController
             return Utils::makeErrMsgResponse("You have not logged in");
         }
 
-        $response = new Response();
-        $companies = array();
-        for($i = 0; $i < 10; $i++) {
-            $curComp = array();
-            $curComp["a"] = 'b';
-            array_push($companies, $curComp);
+        /** @var Company[] $companies */
+        $companies = $this->getDoctrine()
+            ->getRepository(Company::class)
+            ->findAll();
+
+        $return_data = array();
+        foreach ($companies as $company){
+            $return_data[] = [
+                'name'=>$company->getName(),
+                'description'=>$company->getDescription(),
+                ];
         }
-        $response->setContent(json_encode([]));
+        return new Response(json_encode([
+            "success"=>true,
+            "company"=>$return_data,
+        ]));
     }
 }

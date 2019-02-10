@@ -29,9 +29,10 @@ class LoginPageController extends AbstractController
      * @Route("/login/student", name="login_student")
      */
     public function login(Request $request, SessionInterface $session) {
-        if($session->has(Constant::$SES_KEY_STU_ID)){
+        if($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)){
             return Utils::makeErrMsgResponse("You have already logged in");
         }
+        $session->clear();
 
         $email = $request -> request ->get('email');
         $password = $request -> request ->get('password');
@@ -69,15 +70,16 @@ class LoginPageController extends AbstractController
      * @Route("/login/company", name="login_company")
      */
     public function companyLogin(Request $request, SessionInterface $session){
-        if($session->has(Constant::$SES_KEY_COMP_ID)){
+        if($session->has(Constant::$SES_KEY_STU_ID) or $session->has(Constant::$SES_KEY_COMP_ID)){
             return Utils::makeErrMsgResponse("You have already logged in");
         }
+        $session->clear();
 
         $email = $request -> request ->get('email');
         $password = $request -> request ->get('password');
 
         $company = $this->getDoctrine()
-            ->getRepository(Student::class)
+            ->getRepository(Company::class)
             ->findOneBy(['email'=>$email]);
 
         if($company == null) {
