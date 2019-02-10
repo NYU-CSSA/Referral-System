@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Company;
+use App\Utils\Utils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Student;
+use App\Utils\Constant;
 
 class LoginPageController extends AbstractController
 {
@@ -27,8 +29,8 @@ class LoginPageController extends AbstractController
      * @Route("/login/student", name="login_student")
      */
     public function login(Request $request, SessionInterface $session) {
-        if($session->has("student_id")){
-            return new Response(json_encode(['success'=>false, 'errMsg'=>"You have already logged in"]));
+        if($session->has(Constant::$SES_KEY_STU_ID)){
+            return Utils::makeErrMsgResponse("You have already logged in");
         }
 
         $email = $request -> request ->get('email');
@@ -39,42 +41,25 @@ class LoginPageController extends AbstractController
             ->findOneBy(['email'=>$email]);
 
         if($student == null) {
-            return new Response(json_encode(['success'=>'false', 'errMsg'=>'Wrong email']));
+            return Utils::makeErrMsgResponse("Wrong email");
         }
         else if($password != $student->getPassword()) {
-            return new Response(json_encode(['success' => 'false', 'errMsg' => "Wrong password"]));
+            return Utils::makeErrMsgResponse("Wrong password");
         }
-
-        $session->set("student_id", $student->getId());
-        $session->set("student_name", $student->getName());
-        $session->set("student_gender", $student->getGender());
-        $session->set("student_photo", $student->getPhoto());
+        $session->set(Constant::$SES_KEY_STU_ID, $student->getId());
+        $session->set(Constant::$SES_KEY_STU_NAME, $student->getName());
+        $session->set(Constant::$SES_KEY_COMP_EMAIL, $student->getEmail());
 
         return new Response(json_encode(['success'=>true, 'name'=>$student->getName()]));
-    }
-
-    /**
-     * @Route("/student/getcompany", name="get_company")
-     */
-    public function getCompany(Request $request, SessionInterface $session) {
-        // TODO
-        $response = new Response();
-        $companies = array();
-        for($i = 0; $i < 10; $i++) {
-            $curComp = array();
-            $curComp["a"] = 'b';
-            array_push($companies, $curComp);
-        }
-        $response->setContent(json_encode([]));
     }
 
     /**
      * @Route("/student/logout", name="student_logout")
      */
     public function studentLogOut(Request $request, SessionInterface $session) {
-        if(!$session->has("student_id")){
+        if(!$session->has(Constant::$SES_KEY_STU_ID)){
             $session->clear();
-            return new Response(json_encode(['success'=>false, 'errMsg'=>"You have not logged in"]));
+            return Utils::makeErrMsgResponse("You have not logged in");
         }
         $session->clear();
         return new Response(json_encode(['success'=>true]));
@@ -84,8 +69,8 @@ class LoginPageController extends AbstractController
      * @Route("/login/company", name="login_company")
      */
     public function companyLogin(Request $request, SessionInterface $session){
-        if($session->has("company_id")){
-            return new Response(json_encode(['success'=>false, 'errMsg'=>"You have already logged in"]));
+        if($session->has(Constant::$SES_KEY_COMP_ID)){
+            return Utils::makeErrMsgResponse("You have already logged in");
         }
 
         $email = $request -> request ->get('email');
@@ -96,14 +81,14 @@ class LoginPageController extends AbstractController
             ->findOneBy(['email'=>$email]);
 
         if($company == null) {
-            return new Response(json_encode(['success'=>'false', 'errMsg'=>'Wrong email']));
+            return Utils::makeErrMsgResponse("Wrong email");
         }
         else if($password != $company->getPassword()) {
-            return new Response(json_encode(['success' => 'false', 'errMsg' => "Wrong password"]));
+            return Utils::makeErrMsgResponse("Wrong password");
         }
 
-        $session->set("company_id", $company->getId());
-        $session->set("company_name", $company->getName());
+        $session->set(Constant::$SES_KEY_COMP_ID, $company->getId());
+        $session->set(Constant::$SES_KEY_COMP_EMAIL, $company->getEmail());
 
         return new Response(json_encode(['success'=>true, 'name'=>$company->getName()]));
     }
@@ -112,9 +97,9 @@ class LoginPageController extends AbstractController
      * @Route("/company/logout", name="company_logout")
      */
     public function companyLogOut(Request $request, SessionInterface $session) {
-        if(!$session->has("company_id")){
+        if(!$session->has(Constant::$SES_KEY_COMP_ID)){
             $session->clear();
-            return new Response(json_encode(['success'=>false, 'errMsg'=>"You have not logged in"]));
+            return Utils::makeErrMsgResponse("You have not logged in");
         }
         $session->clear();
         return new Response(json_encode(['success'=>true]));

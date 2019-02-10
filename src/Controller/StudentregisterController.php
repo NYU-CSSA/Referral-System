@@ -40,11 +40,10 @@ class StudentregisterController extends AbstractController
             $entityManager->persist($student);
             $entityManager->flush();
         } catch (UniqueConstraintViolationException $e){
-            $message = sprintf('PDOException [%i]: %s', $e->getCode(), $e->getMessage());
-            return new Response(json_encode(["success"=>false, "errMsg"=>"The email has already been registered"]));
+            return Utils::makeErrMsgResponse("The email has already been registered");
         } catch (\Exception $e){
             $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
-            return new Response(json_encode(["success"=>false, "errMsg"=>$message]));
+            return Utils::makeErrMsgResponse($message);
         }
 
         // we can get the auto-generated ID of this entity

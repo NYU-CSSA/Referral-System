@@ -48,6 +48,11 @@ class Company
      */
     private $likedBy;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createtime;
+
     public function __construct()
     {
         $this->receivedResumes = new ArrayCollection();
@@ -156,6 +161,18 @@ class Company
         if ($this->likedBy->contains($likedBy)) {
             $this->likedBy->removeElement($likedBy);
         }
+
+        return $this;
+    }
+
+    public function getCreatetime(): ?\DateTimeInterface
+    {
+        return $this->createtime;
+    }
+
+    public function setCreatetime(\DateTimeInterface $createtime): self
+    {
+        $this->createtime = $createtime;
 
         return $this;
     }
