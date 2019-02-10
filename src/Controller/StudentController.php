@@ -124,4 +124,48 @@ class StudentController extends AbstractController
         return new Response(json_encode(['success' => true]));
 
     }
+
+    /**
+     * @Route("/student/resetpwd", name="student_reset_password")
+     */
+    public function resetPassword(Request $request, SessionInterface $session)
+    {
+        if (!$request->isMethod("POST")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
+        if (!$session->has(Constant::$SES_KEY_STU_ID)) {
+            return ErrorResponse::UnLoggedErrorResponse();
+        }
+
+        /** @var Student $me */
+        $me = $this->getDoctrine()
+            ->getRepository(Student::class)
+            ->findOneBy(['id' => $session->get(Constant::$SES_KEY_STU_ID)]);
+        if ($me == null) {
+            $session->clear();
+            return ErrorResponse::InternalErrorResponse("IMPOSSIBLE: userID in session does not exist!");
+        }
+
+        $missedFields = Utils::getMissingFields($request, ['oldPassword', 'newPassword']);
+        if (sizeof($missedFields) != 0) {
+            return ErrorResponse::FieldMissingErrorResponse($missedFields);
+        }
+
+        if($me->getPassword() != $request->request->get("oldPassword")){
+            return ErrorResponse::LoginErrorResponse();
+        }
+
+        $me->setPassword($request->request->get("newPassword"));
+
+        try {
+            $dm = $this->getDoctrine()->getManager();
+            $dm->persist($me);
+            $dm->flush();
+        } catch (\Exception $e) {
+            $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
+            return ErrorResponse::InternalErrorResponse($message);
+        }
+
+        return new Response(json_encode(['success' => true]));
+    }
 }
