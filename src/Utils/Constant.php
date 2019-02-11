@@ -16,4 +16,8 @@ class Constant
     public static $SES_KEY_COMP_ID = "company_id";
     /** @var string */
     public static $SES_KEY_COMP_EMAIL = "company_email";
+
+    /** ------ File Paths ------ */
+    public static $UPLOADS_PATH = "uploads";
+    public static $USER_PHOTO_PATH = "uploads/userPhotos";
 }

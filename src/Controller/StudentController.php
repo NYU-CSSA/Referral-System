@@ -8,6 +8,8 @@ use App\Utils\Constant;
 use App\Utils\ErrorResponse;
 use App\Utils\Utils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -151,11 +153,54 @@ class StudentController extends AbstractController
             return ErrorResponse::FieldMissingErrorResponse($missedFields);
         }
 
-        if($me->getPassword() != $request->request->get("oldPassword")){
+        if ($me->getPassword() != $request->request->get("oldPassword")) {
             return ErrorResponse::LoginErrorResponse();
         }
 
         $me->setPassword($request->request->get("newPassword"));
+
+        try {
+            $dm = $this->getDoctrine()->getManager();
+            $dm->persist($me);
+            $dm->flush();
+        } catch (\Exception $e) {
+            $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
+            return ErrorResponse::InternalErrorResponse($message);
+        }
+
+        return new Response(json_encode(['success' => true]));
+    }
+
+    /**
+     * @Route("/student/updatephoto", name="student_update_photo")
+     */
+    public function updatePhoto(Request $request, SessionInterface $session)
+    {
+        if (!$request->isMethod("POST")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
+        if (!$session->has(Constant::$SES_KEY_STU_ID)) {
+            return ErrorResponse::UnLoggedErrorResponse();
+        }
+
+        /** @var Student $me */
+        $me = $this->getDoctrine()
+            ->getRepository(Student::class)
+            ->findOneBy(['id' => $session->get(Constant::$SES_KEY_STU_ID)]);
+        if ($me == null) {
+            $session->clear();
+            return ErrorResponse::InternalErrorResponse("IMPOSSIBLE: userID in session does not exist!");
+        }
+
+        /** @var UploadedFile $file */
+        $file = $request->files->get("photo");
+        if ($file == null) {
+            return ErrorResponse::FieldMissingErrorResponse(['photo']);
+        }
+
+        $newFileName = Utils::generateUniqueFileName() . '.' . $file->guessExtension();
+        $file->move("./".Constant::$USER_PHOTO_PATH, $newFileName);
+        $me->setPhoto("/".Constant::$USER_PHOTO_PATH.'/'.$newFileName);
 
         try {
             $dm = $this->getDoctrine()->getManager();
