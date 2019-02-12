@@ -40,6 +40,7 @@ class CompanyController extends AbstractController
                 'intro' => $s->getIntro(),
                 'photo' => $s->getPhoto(),
                 'email' => $s->getEmail(),
+                'resumes' => $s->getResumesArray(),
             ];
         }
         return new Response(json_encode($list));
@@ -162,4 +163,5 @@ class CompanyController extends AbstractController
 
         return new Response(json_encode(['success' => true]));
     }
+
 }

@@ -155,6 +155,29 @@ class Student
         return $this->resumes;
     }
 
+    /**
+     * @return array
+     */
+    public function getResumesArray(): array
+    {
+        $res = [];
+        foreach ($this->resumes as $resume) {
+            $res[] = [
+                'resumeId' => $resume->getId(),
+                'name' => $resume->getName(),
+                'grade' => $resume->getGrade(),
+                'gpa' => $resume->getGpa(),
+                'major' => $resume->getMajor(),
+                'intro' => $resume->getIntro(),
+                'skills' => $resume->getSkills(),
+                'experiences' => $resume->getExperiencesArray(),
+                'pdf' => $resume->getPdf(),
+                'lastEditTime' => $resume->getUpdatetime(),
+            ];
+        }
+        return $res;
+    }
+
     public function addResume(Resume $resume): self
     {
         if (!$this->resumes->contains($resume)) {

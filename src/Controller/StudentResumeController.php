@@ -86,6 +86,7 @@ class StudentResumeController extends AbstractController
             'gpa' => $resume->getGpa(),
             'major' => $resume->getMajor(),
             'intro' => $resume->getIntro(),
+            'skills' => $resume->getSkills(),
             'experiences' => $resume->getExperiencesArray(),
             'pdf' => $resume->getPdf(),
             'lastEditTime' => $resume->getUpdatetime(),
