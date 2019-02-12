@@ -39,11 +39,6 @@ class Company
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Resume", inversedBy="companiesSent")
-     */
-    private $receivedResumes;
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Student", inversedBy="likes")
      */
     private $likedBy;
@@ -58,12 +53,18 @@ class Company
      */
     private $positions;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Application", mappedBy="company", orphanRemoval=true)
+     */
+    private $applications;
+
     public function __construct()
     {
         $this->receivedResumes = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->likedBy = new ArrayCollection();
         $this->positions = new ArrayCollection();
+        $this->applications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,32 +116,6 @@ class Company
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Resume[]
-     */
-    public function getReceivedResumes(): Collection
-    {
-        return $this->receivedResumes;
-    }
-
-    public function addReceivedResume(Resume $receivedResume): self
-    {
-        if (!$this->receivedResumes->contains($receivedResume)) {
-            $this->receivedResumes[] = $receivedResume;
-        }
-
-        return $this;
-    }
-
-    public function removeReceivedResume(Resume $receivedResume): self
-    {
-        if ($this->receivedResumes->contains($receivedResume)) {
-            $this->receivedResumes->removeElement($receivedResume);
-        }
 
         return $this;
     }
@@ -226,6 +201,37 @@ class Company
             // set the owning side to null (unless already changed)
             if ($position->getCompany() === $this) {
                 $position->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Application[]
+     */
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function addApplication(Application $application): self
+    {
+        if (!$this->applications->contains($application)) {
+            $this->applications[] = $application;
+            $application->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplication(Application $application): self
+    {
+        if ($this->applications->contains($application)) {
+            $this->applications->removeElement($application);
+            // set the owning side to null (unless already changed)
+            if ($application->getCompany() === $this) {
+                $application->setCompany(null);
             }
         }
 

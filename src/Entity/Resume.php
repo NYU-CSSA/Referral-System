@@ -41,11 +41,6 @@ class Resume
     private $updatetime;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Company", mappedBy="receivedResumes")
-     */
-    private $companiesSent;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $grade;
@@ -85,10 +80,16 @@ class Resume
      */
     private $experiences;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Application", mappedBy="resume", orphanRemoval=true)
+     */
+    private $applications;
+
     public function __construct()
     {
         $this->companiesSent = new ArrayCollection();
         $this->experiences = new ArrayCollection();
+        $this->applications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,34 +141,6 @@ class Resume
     public function setUpdatetime(\DateTimeInterface $updatetime): self
     {
         $this->updatetime = $updatetime;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Company[]
-     */
-    public function getCompaniesSent(): Collection
-    {
-        return $this->companiesSent;
-    }
-
-    public function addCompaniesSent(Company $companiesSent): self
-    {
-        if (!$this->companiesSent->contains($companiesSent)) {
-            $this->companiesSent[] = $companiesSent;
-            $companiesSent->addReceivedResume($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompaniesSent(Company $companiesSent): self
-    {
-        if ($this->companiesSent->contains($companiesSent)) {
-            $this->companiesSent->removeElement($companiesSent);
-            $companiesSent->removeReceivedResume($this);
-        }
 
         return $this;
     }
@@ -305,6 +278,37 @@ class Resume
             // set the owning side to null (unless already changed)
             if ($experience->getResume() === $this) {
                 $experience->setResume(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Application[]
+     */
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function addApplication(Application $application): self
+    {
+        if (!$this->applications->contains($application)) {
+            $this->applications[] = $application;
+            $application->setResume($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplication(Application $application): self
+    {
+        if ($this->applications->contains($application)) {
+            $this->applications->removeElement($application);
+            // set the owning side to null (unless already changed)
+            if ($application->getResume() === $this) {
+                $application->setResume(null);
             }
         }
 
