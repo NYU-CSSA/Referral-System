@@ -32,9 +32,19 @@ class StudentController extends AbstractController
         }
 
         /** @var Company[] $companies */
-        $companies = $this->getDoctrine()
-            ->getRepository(Company::class)
-            ->findAll();
+        $companies = null;
+        if ($request->query->has('companyId')) {
+            $companies = $this->getDoctrine()
+                ->getRepository(Company::class)
+                ->findBy(['id' => $request->query->get('companyId')]);
+            if (sizeof($companies) == 0) {
+                return ErrorResponse::DataNotFoundResponse();
+            }
+        } else {
+            $companies = $this->getDoctrine()
+                ->getRepository(Company::class)
+                ->findAll();
+        }
 
         $return_data = array();
         foreach ($companies as $company) {
@@ -42,6 +52,7 @@ class StudentController extends AbstractController
                 'companyId' => $company->getId(),
                 'name' => $company->getName(),
                 'description' => $company->getDescription(),
+                'positions' => $company->getPositionsArray(),
             ];
         }
 
@@ -241,6 +252,7 @@ class StudentController extends AbstractController
                 'companyId' => $company->getId(),
                 'name' => $company->getName(),
                 'description' => $company->getDescription(),
+                'positions' => $company->getPositionsArray(),
             ];
         }
 

@@ -53,11 +53,17 @@ class Company
      */
     private $createtime;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="company", orphanRemoval=true)
+     */
+    private $positions;
+
     public function __construct()
     {
         $this->receivedResumes = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->likedBy = new ArrayCollection();
+        $this->positions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,6 +179,55 @@ class Company
     public function setCreatetime(\DateTimeInterface $createtime): self
     {
         $this->createtime = $createtime;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Position[]
+     */
+    public function getPositions(): Collection
+    {
+        return $this->positions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPositionsArray(): array
+    {
+        $res = [];
+        foreach ($this->positions as $pos) {
+            /** @var Position $pos */
+            $res[] = [
+                'id' => $pos->getId(),
+                'name' => $pos->getName(),
+                'description' => $pos->getDesctiption(),
+                'number' => $pos->getNumber(),
+            ];
+        }
+        return $res;
+    }
+
+    public function addPosition(position $position): self
+    {
+        if (!$this->positions->contains($position)) {
+            $this->positions[] = $position;
+            $position->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removePosition(position $position): self
+    {
+        if ($this->positions->contains($position)) {
+            $this->positions->removeElement($position);
+            // set the owning side to null (unless already changed)
+            if ($position->getCompany() === $this) {
+                $position->setCompany(null);
+            }
+        }
 
         return $this;
     }
