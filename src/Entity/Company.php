@@ -215,6 +215,24 @@ class Company
         return $this->applications;
     }
 
+    /**
+     * @return array
+     */
+    public function getApplicationsArray(): array
+    {
+        $res = [];
+        /** @var Application $application */
+        foreach ($this->applications as $application) {
+            $res[] = [
+                'applicationId' => $application->getId(),
+                'positionName' => $application->getPosition()->getName(),
+                'studentName' => $application->getResume()->getStudent()->getName(),
+                'notes' =>$application->getNotes(),
+            ];
+        }
+        return $res;
+    }
+
     public function addApplication(Application $application): self
     {
         if (!$this->applications->contains($application)) {

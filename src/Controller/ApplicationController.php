@@ -211,8 +211,32 @@ class ApplicationController extends AbstractController
             $message = sprintf('Exception [%i]: %s', $e->getCode(), $e->getTraceAsString());
             return ErrorResponse::InternalErrorResponse($message);
         }
-
         return new Response(json_encode(['success' => true]));
+    }
+
+    /**
+     * @Route("/company/getapplist")
+     */
+    public function compGetAppList(Request $request, SessionInterface $session): Response
+    {
+        if (!$request->isMethod("GET")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
+        if (!$session->has(Constant::$SES_KEY_COMP_ID)) {
+            return ErrorResponse::UnLoggedErrorResponse();
+        }
+
+        /** @var Company $comp */
+        $comp = $this->getDoctrine()
+            ->getRepository(Company::class)
+            ->findOneBy(['id' => $session->get(Constant::$SES_KEY_COMP_ID)]);
+        if ($comp == null) {
+            return ErrorResponse::DataNotFoundResponse();
+        }
+
+        $apps = $comp->getApplicationsArray();
+
+        return new Response(json_encode(['success' => true, 'applications' => $apps]));
     }
 
 }

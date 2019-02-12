@@ -99,17 +99,23 @@ class CompanyController extends AbstractController
         if (!$request->isMethod("GET")) {
             return ErrorResponse::RequestTypeErrorResponse();
         }
-        if (!$session->has(Constant::$SES_KEY_COMP_ID) && !$session->has(Constant::$SES_KEY_STU_ID)) {
+        $compId = null;
+        if ($session->has(Constant::$SES_KEY_COMP_ID)) {
+            $compId = $session->get(Constant::$SES_KEY_COMP_ID);
+        } else if ($session->has(Constant::$SES_KEY_STU_ID)) {
+            if($request->query->has('conpanyId')){
+                $compId = $request->query->get('companyId');
+            } else {
+                return ErrorResponse::FieldMissingErrorResponse(['companyId']);
+            }
+        } else {
             return ErrorResponse::UnLoggedErrorResponse();
-        }
-        if (!$request->query->has('companyId')) {
-            return ErrorResponse::FieldMissingErrorResponse(['companyId']);
         }
 
         /** @var Company $comp */
         $comp = $this->getDoctrine()
             ->getRepository(Company::class)
-            ->findOneBy(['id' => $request->query->get('companyId')]);
+            ->findOneBy(['id' => $compId]);
         if ($comp == null) {
             return ErrorResponse::DataNotFoundResponse();
         }
