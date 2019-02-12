@@ -26,7 +26,7 @@ class ErrorResponse
 
     public static function FieldMissingErrorResponse(array $missedFields): Response
     {
-        return self::makeErrMsgResponse(104, "Request Field Missing" . json_encode($missedFields));
+        return self::makeErrMsgResponse(104, "Request Field Missing: " . json_encode($missedFields));
     }
 
     /** -------- User-level errors -------- */
@@ -38,6 +38,11 @@ class ErrorResponse
     public static function LoginErrorResponse(): Response
     {
         return self::makeErrMsgResponse(202, "Wrong password / User does not exist");
+    }
+
+    public static function DataNotFoundResponse(): Response
+    {
+        return self::makeErrMsgResponse(203, "The requested data is not found or you don't have the permission");
     }
 
     /** -------- Backend-level errors --------- */

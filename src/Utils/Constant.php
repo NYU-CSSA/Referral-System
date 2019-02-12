@@ -20,4 +20,5 @@ class Constant
     /** ------ File Paths ------ */
     public static $UPLOADS_PATH = "uploads";
     public static $USER_PHOTO_PATH = "uploads/userPhotos";
+    public static $RESUME_PATH = "uploads/resumes";
 }
