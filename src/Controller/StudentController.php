@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Validator\Constraints\Collection;
 
 class StudentController extends AbstractController
 {
@@ -38,6 +39,7 @@ class StudentController extends AbstractController
         $return_data = array();
         foreach ($companies as $company) {
             $return_data[] = [
+                'companyId' => $company->getId(),
                 'name' => $company->getName(),
                 'description' => $company->getDescription(),
             ];
@@ -199,8 +201,8 @@ class StudentController extends AbstractController
         }
 
         $newFileName = Utils::generateUniqueFileName() . '.' . $file->guessExtension();
-        $file->move("./".Constant::$USER_PHOTO_PATH, $newFileName);
-        $me->setPhoto("/".Constant::$USER_PHOTO_PATH.'/'.$newFileName);
+        $file->move("./" . Constant::$USER_PHOTO_PATH, $newFileName);
+        $me->setPhoto("/" . Constant::$USER_PHOTO_PATH . '/' . $newFileName);
 
         try {
             $dm = $this->getDoctrine()->getManager();
@@ -212,5 +214,39 @@ class StudentController extends AbstractController
         }
 
         return new Response(json_encode(['success' => true]));
+    }
+
+    /**
+     * @Route("/student/searchcompany", name="student_search_company")
+     */
+    public function searchCompany(Request $request, SessionInterface $session)
+    {
+        if (!$request->isMethod("POST")) {
+            return ErrorResponse::RequestTypeErrorResponse();
+        }
+
+        $missedFields = Utils::getMissingFields($request, ['companyName']);
+        if (sizeof($missedFields) != 0) {
+            return ErrorResponse::FieldMissingErrorResponse($missedFields);
+        }
+
+        /** @var Collection|Company[] $companies */
+        $companies = $this->getDoctrine()
+            ->getRepository(Company::class)
+            ->findBy(['name' => $request->request->get('companyName')]);
+
+        $return_data = array();
+        foreach ($companies as $company) {
+            $return_data[] = [
+                'companyId' => $company->getId(),
+                'name' => $company->getName(),
+                'description' => $company->getDescription(),
+            ];
+        }
+
+        return new Response(json_encode([
+            "success" => true,
+            "company" => $return_data,
+        ]));
     }
 }
