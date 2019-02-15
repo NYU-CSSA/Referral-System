@@ -14,10 +14,19 @@ git clone git@github.com:NYU-CSSA/Referral-System.git
 php bin/console server:run
 ```
 
+### Rebuild MySQL database
+```shell
+php bin/console doctrine:database:drop --force;
+php bin/console doctrine:database:create;
+php bin/console make:migration;
+php bin/console doctrine:migrations:migrate;
+```
+
 ### deploy it to Heroku
 
+Refer to heroku tutorial.
 ```shell
-# I forgot it. Refer to heroku tutorial.
+git push heroku master 
 ```
 
 ## To our developers:
@@ -47,14 +56,16 @@ In order to get your hands dirty, you should go through the basic trial of both 
     to deploy a really simple php project on your free account. Trust me it's not hard and it will be interesting.
 
     <!-- -[](https://medium.com/@luis.barros.nobrega/symfony-4-deploying-a-new-application-in-heroku-ada66f0592d1) -->
+    - `Heroku` database addon: [ClearDB](https://devcenter.heroku.com/articles/cleardb)
+
 
 Have fun with the framework and the tool!
 
 ### Next step:
 
-- [ ] Registration [How to Implement a Simple Registration Form](https://symfony.com/doc/current/doctrine/registration_form.html)
+- [x] Registration [How to Implement a Simple Registration Form](https://symfony.com/doc/current/doctrine/registration_form.html)
 
-- [ ] Login [How to Build a Login Form](https://symfony.com/doc/current/security/form_login_setup.html)
+- [x] Login [How to Build a Login Form](https://symfony.com/doc/current/security/form_login_setup.html)
 
 - [x] [How to connect to Google Cloud](https://cloud.google.com/sql/docs/mysql/connect-external-app)
 
